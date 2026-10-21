@@ -1,5 +1,5 @@
 import { createMemo, lazy, on, onCleanup, Suspense } from "solid-js"
-import { Command, createKeyed, onIdle, Panel, type Setup } from "../sdk"
+import { Command, createKeyed, MenuItem, onIdle, Panel, type Setup } from "../sdk"
 import type Terminal from "./index"
 import { createTerminalModel, type TerminalWorkspace } from "./model"
 
@@ -62,6 +62,26 @@ const setup: Setup<typeof Terminal> = (ctx) => {
 
           return
         }
+
+        layout.open(DOCK, target.session)
+        target.terminal.requestFocus(target.terminal.active())
+      },
+    }),
+  )
+
+  ctx.add(
+    MenuItem,
+    (): MenuItem => ({
+      menu: "session.panel",
+      id: "open",
+      title: ctx.t("tab.title"),
+      icon: "terminal",
+      keybind: "terminal.toggle",
+      order: 30,
+      run() {
+        const target = current()
+
+        if (!target) return
 
         layout.open(DOCK, target.session)
         target.terminal.requestFocus(target.terminal.active())
